@@ -116,7 +116,7 @@ public:
     arma::uvec miss_Y = arma::find_nonfinite(m_Tarvec);
     
     arma::vec f = arma::normpdf(t.elem(obs_Y));
-    arma::vec F = arma::normcdf(t.elem(obs_Y));
+    arma::vec F = arma::normcdf(t.elem(obs_Y)) + 1e-200;
     arma::vec deno = F % (1 - F);
     
     arma::uvec indices = arma::find(F == 1);
