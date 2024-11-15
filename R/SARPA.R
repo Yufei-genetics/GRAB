@@ -174,7 +174,7 @@ SARPA.NullModel = function(PhenoFile,          # at least four columns: column 1
   MAF_interval = control$MAF_interval
   CovarColList = control$CovarColList
   
-  subjID = ResidMat$SubjID
+  SubjID = ResidMat$SubjID
   Pheno = Pheno %>% filter(SubjID %in% subjID)
   SparseGRM = SparseGRM %>% filter(ID1 %in% subjID & ID2 %in% subjID)
   PairwiseIBD = PairwiseIBD %>% filter(ID1 %in% subjID & ID2 %in% subjID)
@@ -447,7 +447,7 @@ SARPA.NullModel = function(PhenoFile,          # at least four columns: column 1
   
   
   obj = list(Tarvec = Tarvec, Riskvec = Riskvec, designMat = designMat, GRM = SparseGRM1, gammas = gammas, 
-             Resid = Resid, subjData = subjID, N = length(subjID), 
+             Resid = Resid, subjData = SubjID, N = length(subjID), 
              inv_tX_X = inv_tX_X, inv_tX_X_tX = inv_tX_X_tX, Resid.unrelated.outliers = Resid.unrelated.outliers,
              R_GRM_R = R_GRM_R, R_GRM_R_TwoSubjOutlier = R_GRM_R_TwoSubjOutlier,
              sum_R_nonOutlier = sum_R_nonOutlier, R_GRM_R_nonOutlier = R_GRM_R_nonOutlier,
