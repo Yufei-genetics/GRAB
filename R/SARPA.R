@@ -175,9 +175,9 @@ SARPA.NullModel = function(PhenoFile,          # at least four columns: column 1
   CovarColList = control$CovarColList
   
   SubjID = ResidMat$SubjID
-  Pheno = Pheno %>% filter(SubjID %in% subjID)
-  SparseGRM = SparseGRM %>% filter(ID1 %in% subjID & ID2 %in% subjID)
-  PairwiseIBD = PairwiseIBD %>% filter(ID1 %in% subjID & ID2 %in% subjID)
+  Pheno = Pheno %>% filter(SubjID %in% SubjID)
+  SparseGRM = SparseGRM %>% filter(ID1 %in% SubjID & ID2 %in% SubjID)
+  PairwiseIBD = PairwiseIBD %>% filter(ID1 %in% SubjID & ID2 %in% SubjID)
   
   # Use residual information to define outliers / non-outliers
   Resid = ResidMat$Resid
@@ -447,7 +447,7 @@ SARPA.NullModel = function(PhenoFile,          # at least four columns: column 1
   
   
   obj = list(Tarvec = Tarvec, Riskvec = Riskvec, designMat = designMat, GRM = SparseGRM1, gammas = gammas, 
-             Resid = Resid, subjData = SubjID, N = length(subjID), 
+             Resid = Resid, subjData = SubjID, N = length(SubjID), 
              inv_tX_X = inv_tX_X, inv_tX_X_tX = inv_tX_X_tX, Resid.unrelated.outliers = Resid.unrelated.outliers,
              R_GRM_R = R_GRM_R, R_GRM_R_TwoSubjOutlier = R_GRM_R_TwoSubjOutlier,
              sum_R_nonOutlier = sum_R_nonOutlier, R_GRM_R_nonOutlier = R_GRM_R_nonOutlier,
