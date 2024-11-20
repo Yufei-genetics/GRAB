@@ -174,8 +174,8 @@ SARPA.NullModel = function(PhenoFile,          # at least four columns: column 1
   MAF_interval = control$MAF_interval
   CovarColList = control$CovarColList
   
-  SubjID = ResidMat$SubjID
-  Pheno = Pheno %>% filter(SubjID %in% SubjID)
+  SubjID = subjID = ResidMat$SubjID
+  Pheno = Pheno %>% filter(Pheno$SubjID %in% subjID)
   SparseGRM = SparseGRM %>% filter(ID1 %in% SubjID & ID2 %in% SubjID)
   PairwiseIBD = PairwiseIBD %>% filter(ID1 %in% SubjID & ID2 %in% SubjID)
   
