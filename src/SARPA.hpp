@@ -120,10 +120,10 @@ public:
     arma::vec deno = F % (1 - F);
     
     arma::uvec indices1 = arma::find(F == 1);
-    deno.elem(indices1) = arma::normcdf(-t.elem(indices)) + 1e-200;
+    deno.elem(indices1) = arma::normcdf(-t.elem(indices1)) + 1e-200;
     
     arma::uvec indices2 = arma::find(F == 0);
-    deno.elem(indices2) = 1e-200;
+    deno.elem(indices2) = deno.elem(indices2) + 1e-200;
     
     double gamma_riskVec = Rcpp::as<double>(m_gammas["gamma.riskVec"]);
     double sigma2_sq = Rcpp::as<double>(t_fit["sigma2_sq"]);
