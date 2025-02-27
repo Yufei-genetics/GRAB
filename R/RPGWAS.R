@@ -79,7 +79,6 @@ checkControl.RPGWAS.NullModel = function(control,
   if(any(colnames(PairwiseIBD) != c("ID1", "ID2", "pa", "pb", "pc")))
     stop("The column names of PairwiseIBD should be ['ID1', 'ID2', 'pa', 'pb', 'pc'].")
   
-  print(is.null(rownames(GenoLambda)))
   if(is.null(rownames(GenoLambda)))
     stop("GenoMat for calculating lambda should have rownames.")
   
