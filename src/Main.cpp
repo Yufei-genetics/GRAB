@@ -29,6 +29,7 @@
 #include "SPAGRM.hpp"
 #include "SAGELD.hpp"
 #include "WtSPAG.hpp"
+#include "RPGWAS.hpp"
 
 // global objects for different genotype formats
 
@@ -45,6 +46,7 @@ static SPAmix::SPAmixClass* ptr_gSPAmixobj = NULL;
 static SPAGRM::SPAGRMClass* ptr_gSPAGRMobj = NULL;
 static SAGELD::SAGELDClass* ptr_gSAGELDobj = NULL;
 static WtSPAG::WtSPAGClass* ptr_gWtSPAGobj = NULL;
+static RPGWAS::RPGWASClass* ptr_gRPGWASobj = NULL;
 
 // global variables for analysis
 std::string g_impute_method;      // "mean", "minor", or "drop"
@@ -187,7 +189,7 @@ void updateGroupInfo(arma::vec t_GVec,
 //////// ---------- Main function for marker-level analysis --------- ////////////
 
 // [[Rcpp::export]]
-Rcpp::List mainMarkerInCPP(std::string t_method,       // "POLMM", "SPACox", "SAIGE", "SPAmix", "SPAGRM"
+Rcpp::List mainMarkerInCPP(std::string t_method,       // "POLMM", "SPACox", "SAIGE", "SPAmix", "SPAGRM", "RPGWAS"
                            std::string t_genoType,     // "PLINK", "BGEN"
                            std::vector<uint64_t> t_genoIndex)  
 {
@@ -1075,7 +1077,7 @@ arma::vec Unified_getOneMarker(std::string t_genoType,   // "PLINK", "BGEN"
 }
 
 // a unified function to get marker-level p-value
-void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE", "SPAmix", and "SPAGRM"
+void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE", "SPAmix", "SPAGRM", "RPGWAS"
                            arma::vec t_GVec,
                            bool t_isOnlyOutputNonZero,
                            std::vector<uint32_t> t_indexForNonZero,
@@ -1109,7 +1111,7 @@ void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE"
 }
 
 // a unified function to get marker-level p-value
-void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE", "SPAmix", and "SPAGRM"
+void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE", "SPAmix", "SPAGRM" and "RPGWAS"
                            arma::vec t_GVec,
                            bool t_isOnlyOutputNonZero,
                            std::vector<uint32_t> t_indexForNonZero,
@@ -1123,12 +1125,16 @@ void Unified_getMarkerPval(std::string t_method,   // "POLMM", "SPACox", "SAIGE"
 {
   if(t_method == "SPAGRM"){
     if(t_isOnlyOutputNonZero == true)
-      Rcpp::stop("When using SPAGRM method to calculate marker-level p-values, 't_isOnlyOutputNonZero' shold be false.");
+      Rcpp::stop("When using SPAGRM method to calculate marker-level p-values, 't_isOnlyOutputNonZero' should be false.");
     t_pval = ptr_gSPAGRMobj->getMarkerPval(t_GVec, t_altFreq, t_zScore, t_hwepval, t_hwepvalCutoff);
   }else if(t_method == "SAGELD"){
     if(t_isOnlyOutputNonZero == true)
-      Rcpp::stop("When using SAGELD method to calculate marker-level p-values, 't_isOnlyOutputNonZero' shold be false.");
+      Rcpp::stop("When using SAGELD method to calculate marker-level p-values, 't_isOnlyOutputNonZero' should be false.");
     t_pval = ptr_gSAGELDobj->getMarkerPval(t_GVec, t_altFreq, t_hwepval, t_hwepvalCutoff);
+  }else if(t_method == "RPGWAS"){
+    if(t_isOnlyOutputNonZero == true)
+      Rcpp::stop("When using RPGWAS method to calculate marker-level p-values, 't_isOnlyOutputNonZero' should be false.");
+    t_pval = ptr_gRPGWASobj->getMarkerPval(t_GVec, t_altFreq, t_zScore, t_hwepval, t_hwepvalCutoff);
   }else{
     Unified_getMarkerPval(t_method, t_GVec,
                           false, // bool t_isOnlyOutputNonZero,
@@ -1432,6 +1438,58 @@ void setSAGELDobjInCPP(std::string t_Method,
                                            t_R_GRM_R_nonOutlier, t_R_GRM_R_nonOutlier_G, t_R_GRM_R_nonOutlier_GxE, t_R_GRM_R_nonOutlier_G_GxE, t_R_GRM_R_TwoSubjOutlier, 
                                            t_R_GRM_R_TwoSubjOutlier_G, t_R_GRM_R_TwoSubjOutlier_GxE, t_R_GRM_R_TwoSubjOutlier_G_GxE, t_TwoSubj_list, t_ThreeSubj_list, 
                                            t_MAF_interval, t_zScoreE_cutoff, t_SPA_Cutoff, t_zeta, t_tol);
+}
+
+// [[Rcpp::export]]
+void setRPGWASobjInCPP(arma::vec t_Tarvec,
+                       arma::vec t_Riskvec,
+                       arma::mat t_designMat,
+                       Rcpp::DataFrame t_GRM,
+                       arma::vec t_resid,
+                       double t_lambda,
+                       arma::vec t_gammas,
+                       double t_gamma_riskVec,
+                       arma::vec t_beta_null,
+                       arma::vec t_resid_risk,
+                       arma::vec t_t0,
+                       arma::vec t_resid_unrelated_outliers,
+                       double t_sum_R_nonOutlier,
+                       double t_R_GRM_R_nonOutlier,
+                       double t_R_GRM_R_TwoSubjOutlier,
+                       double t_R_GRM_R,
+                       arma::vec t_MAF_interval,
+                       Rcpp::List t_TwoSubj_list,
+                       Rcpp::List t_ThreeSubj_list,
+                       double t_SPA_Cutoff,
+                       double t_zeta,
+                       double t_tol)
+{
+  if(ptr_gRPGWASobj)
+    delete ptr_gRPGWASobj;
+  
+  ptr_gRPGWASobj = new RPGWAS::RPGWASClass(t_Tarvec,
+                                           t_Riskvec,
+                                           t_designMat,
+                                           t_GRM,
+                                           t_resid,
+                                           t_lambda,
+                                           t_gammas,
+                                           t_gamma_riskVec,
+                                           t_beta_null,
+                                           t_resid_risk,
+                                           t_t0,
+                                           t_resid_unrelated_outliers,
+                                           t_sum_R_nonOutlier,
+                                           t_R_GRM_R_nonOutlier,
+                                           t_R_GRM_R_TwoSubjOutlier,
+                                           t_R_GRM_R,
+                                           t_MAF_interval,
+                                           t_TwoSubj_list,
+                                           t_ThreeSubj_list,
+                                           t_SPA_Cutoff,
+                                           t_zeta,
+                                           t_tol);
+  
 }
 
 // [[Rcpp::export]]

@@ -353,6 +353,37 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// setRPGWASobjInCPP
+void setRPGWASobjInCPP(arma::vec t_Tarvec, arma::vec t_Riskvec, arma::mat t_designMat, Rcpp::DataFrame t_GRM, arma::vec t_resid, double t_lambda, arma::vec t_gammas, double t_gamma_riskVec, arma::vec t_beta_null, arma::vec t_resid_risk, arma::vec t_t0, arma::vec t_resid_unrelated_outliers, double t_sum_R_nonOutlier, double t_R_GRM_R_nonOutlier, double t_R_GRM_R_TwoSubjOutlier, double t_R_GRM_R, arma::vec t_MAF_interval, Rcpp::List t_TwoSubj_list, Rcpp::List t_ThreeSubj_list, double t_SPA_Cutoff, double t_zeta, double t_tol);
+RcppExport SEXP _GRAB_setRPGWASobjInCPP(SEXP t_TarvecSEXP, SEXP t_RiskvecSEXP, SEXP t_designMatSEXP, SEXP t_GRMSEXP, SEXP t_residSEXP, SEXP t_lambdaSEXP, SEXP t_gammasSEXP, SEXP t_gamma_riskVecSEXP, SEXP t_beta_nullSEXP, SEXP t_resid_riskSEXP, SEXP t_t0SEXP, SEXP t_resid_unrelated_outliersSEXP, SEXP t_sum_R_nonOutlierSEXP, SEXP t_R_GRM_R_nonOutlierSEXP, SEXP t_R_GRM_R_TwoSubjOutlierSEXP, SEXP t_R_GRM_RSEXP, SEXP t_MAF_intervalSEXP, SEXP t_TwoSubj_listSEXP, SEXP t_ThreeSubj_listSEXP, SEXP t_SPA_CutoffSEXP, SEXP t_zetaSEXP, SEXP t_tolSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type t_Tarvec(t_TarvecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_Riskvec(t_RiskvecSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type t_designMat(t_designMatSEXP);
+    Rcpp::traits::input_parameter< Rcpp::DataFrame >::type t_GRM(t_GRMSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_resid(t_residSEXP);
+    Rcpp::traits::input_parameter< double >::type t_lambda(t_lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_gammas(t_gammasSEXP);
+    Rcpp::traits::input_parameter< double >::type t_gamma_riskVec(t_gamma_riskVecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_beta_null(t_beta_nullSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_resid_risk(t_resid_riskSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_t0(t_t0SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_resid_unrelated_outliers(t_resid_unrelated_outliersSEXP);
+    Rcpp::traits::input_parameter< double >::type t_sum_R_nonOutlier(t_sum_R_nonOutlierSEXP);
+    Rcpp::traits::input_parameter< double >::type t_R_GRM_R_nonOutlier(t_R_GRM_R_nonOutlierSEXP);
+    Rcpp::traits::input_parameter< double >::type t_R_GRM_R_TwoSubjOutlier(t_R_GRM_R_TwoSubjOutlierSEXP);
+    Rcpp::traits::input_parameter< double >::type t_R_GRM_R(t_R_GRM_RSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_MAF_interval(t_MAF_intervalSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type t_TwoSubj_list(t_TwoSubj_listSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type t_ThreeSubj_list(t_ThreeSubj_listSEXP);
+    Rcpp::traits::input_parameter< double >::type t_SPA_Cutoff(t_SPA_CutoffSEXP);
+    Rcpp::traits::input_parameter< double >::type t_zeta(t_zetaSEXP);
+    Rcpp::traits::input_parameter< double >::type t_tol(t_tolSEXP);
+    setRPGWASobjInCPP(t_Tarvec, t_Riskvec, t_designMat, t_GRM, t_resid, t_lambda, t_gammas, t_gamma_riskVec, t_beta_null, t_resid_risk, t_t0, t_resid_unrelated_outliers, t_sum_R_nonOutlier, t_R_GRM_R_nonOutlier, t_R_GRM_R_TwoSubjOutlier, t_R_GRM_R, t_MAF_interval, t_TwoSubj_list, t_ThreeSubj_list, t_SPA_Cutoff, t_zeta, t_tol);
+    return R_NilValue;
+END_RCPP
+}
 // setSPAmixobjInCPP
 void setSPAmixobjInCPP(arma::mat t_resid, arma::mat t_PCs, int t_N, double t_SPA_Cutoff, Rcpp::List t_outlierList);
 RcppExport SEXP _GRAB_setSPAmixobjInCPP(SEXP t_residSEXP, SEXP t_PCsSEXP, SEXP t_NSEXP, SEXP t_SPA_CutoffSEXP, SEXP t_outlierListSEXP) {
@@ -443,6 +474,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GRAB_setPOLMMobjInCPP_NULL", (DL_FUNC) &_GRAB_setPOLMMobjInCPP_NULL, 10},
     {"_GRAB_setSPAGRMobjInCPP", (DL_FUNC) &_GRAB_setSPAGRMobjInCPP, 12},
     {"_GRAB_setSAGELDobjInCPP", (DL_FUNC) &_GRAB_setSAGELDobjInCPP, 41},
+    {"_GRAB_setRPGWASobjInCPP", (DL_FUNC) &_GRAB_setRPGWASobjInCPP, 22},
     {"_GRAB_setSPAmixobjInCPP", (DL_FUNC) &_GRAB_setSPAmixobjInCPP, 5},
     {"_GRAB_setSPACoxobjInCPP", (DL_FUNC) &_GRAB_setSPACoxobjInCPP, 7},
     {"_GRAB_setWtSPAGobjInCPP", (DL_FUNC) &_GRAB_setWtSPAGobjInCPP, 4},

@@ -129,6 +129,15 @@ GRAB.Marker = function(objNull,
     }
   }
   
+  if(NullModelClass == "RPGWAS_NULL_Model")
+  {
+    if(length(objNull$MAF_interval) > 1)
+    {
+      if(control$min_maf_marker <= min(objNull$MAF_interval))
+        stop("min_maf_marker is out of MAF_interval, Please reset min_maf_marker or check MAF_interval.")
+    }
+  }
+  
   indexChunk = outList$indexChunk
   Start = outList$Start
   End = outList$End
@@ -246,6 +255,10 @@ setMarker = function(NullModelClass, objNull, control, chrom, Group, ifOutGroup)
   # Check WtSPAG.R
   if(NullModelClass == "WtSPAG_NULL_Model")
     obj.setMarker = setMarker.WtSPAG(objNull, control)
+  
+  # Check RPGWAS.R
+  if(NullModelClass == "RPGWAS_NULL_Model")
+    obj.setMarker = setMarker.RPGWAS(objNull, control)
     
   return(obj.setMarker)
 }
@@ -297,6 +310,9 @@ mainMarker = function(NullModelClass, genoType, genoIndex, outputColumns, objNul
   if(NullModelClass == "WtSPAG_NULL_Model")
     obj.mainMarker = mainMarker.WtSPAG(genoType, genoIndex, outputColumns, obj.setMarker)
   
+  # Check 'RPGWAS.R'
+  if(NullModelClass == "RPGWAS_NULL_Model")
+    obj.mainMarker = mainMarker.RPGWAS(genoType, genoIndex, outputColumns)
   return(obj.mainMarker)
 }
 
