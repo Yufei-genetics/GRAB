@@ -93,14 +93,14 @@ public:
     
     arma::vec var_coef = inv_tG_G_tG * variance;
     arma::vec conditional_variance = G * var_coef;
-    arma::vec new_riskVec = fitted_values + sqrt(sigma2_sq) * residuals / sqrt(conditional_variance);
+    arma::vec new_riskvec = fitted_values + sqrt(sigma2_sq) * residuals / sqrt(conditional_variance);
     
-    arma::vec new_riskvec = m_Riskvec - coef_geno[1] * t_Gvec; // wait for checking
+    new_riskvec = new_riskvec - coef_geno[1] * t_Gvec; // wait for checking
     
     arma::uvec obs_Y = arma::find_finite(m_Tarvec);
     arma::uvec miss_Y = arma::find_nonfinite(m_Tarvec);
     
-    arma::vec t = m_t0 + m_gamma_riskVec * new_riskVec.elem(obs_Y);
+    arma::vec t = m_t0 + m_gamma_riskVec * new_riskvec.elem(obs_Y);
     arma::vec f = arma::normpdf(t);
     arma::vec F = arma::normcdf(t) + 1e-200;
     arma::vec deno = F % (1 - F);
