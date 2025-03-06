@@ -102,7 +102,7 @@ public:
     
     arma::vec t = m_t0 + m_gamma_riskVec * new_riskvec.elem(obs_Y);
     arma::vec f = arma::normpdf(t);
-    arma::vec F = arma::normcdf(t) + 1e-200;
+    arma::vec F = arma::normcdf(t);
     arma::vec deno = F % (1 - F);
     
     arma::uvec indices1 = arma::find(F == 1);
@@ -112,7 +112,7 @@ public:
     deno.elem(indices2) = deno.elem(indices2) + 1e-200;
     
     double lambda = m_lambda;
-    if (pval > 1e-3) {
+    if (pval < 1e-3) {
         double ia2b2 = - m_gamma_riskVec * arma::sum(arma::pow(f, 2) % arma::pow(t_Gvec.elem(obs_Y), 2) / deno);
         double ib2b2 = arma::as_scalar(arma::sum(arma::pow(t_Gvec, 2)) / sigma2_sq) - (m_gamma_riskVec * ia2b2);
         lambda = ia2b2 / ib2b2;
