@@ -116,8 +116,8 @@ setMarker.RPGWAS = function(objNull, control)
                    objNull$lambda,
                    objNull$gammas,
                    objNull$gamma_riskVec,
-                   objNull$beta_null,
-                   objNull$resid_risk,
+                   objNull$inv_tX_X,
+                   objNull$inv_tX_X_tX,
                    objNull$t0,
                    objNull$Resid.unrelated.outliers,
                    objNull$sum_R_nonOutlier,
@@ -270,7 +270,10 @@ RPGWAS.NullModel = function(PhenoFile,          # at least four columns: column 
   gamma.riskVec = gammas[names(gammas) == "gamma.riskVec"]
   gammas = gammas[names(gammas) != "gamma.riskVec"] 
     
-  betas.null = null.fitter$fit.null[grep("^beta", names(null.fitter$fit.null))]
+  X = cbind(1, designMat)
+  tX_X = t(X) %*% X
+  inv_tX_X = solve(tX_X)
+  inv_tX_X_tX = inv_tX_X %*% t(X)
   
   R_GRM_R = SparseGRM1 %>% filter(ID1 %in% SubjID.unrelated) %>% select(Cov) %>% sum
   sum_R_nonOutlier = ResidMat.unrelated %>% filter(Outlier == FALSE) %>% select(Resid) %>% sum
@@ -462,7 +465,7 @@ RPGWAS.NullModel = function(PhenoFile,          # at least four columns: column 
   
   obj = list(Tarvec = TarVec, Riskvec = RiskVec, designMat = designMat, GRM = SparseGRM1, Resid = Resid, 
              subjData = SubjID, N = length(SubjID), lambda = null.fitter$lambda, gammas = gammas, gamma_riskVec = gamma.riskVec,
-             beta_null = betas.null, resid_risk = null.fitter$resid_risk, t0 = null.fitter$t0, Resid.unrelated.outliers = Resid.unrelated.outliers,
+             inv_tX_X = inv_tX_X, inv_tX_X_tX = inv_tX_X_tX, t0 = null.fitter$t0, Resid.unrelated.outliers = Resid.unrelated.outliers,
              R_GRM_R = R_GRM_R, R_GRM_R_TwoSubjOutlier = R_GRM_R_TwoSubjOutlier,
              sum_R_nonOutlier = sum_R_nonOutlier, R_GRM_R_nonOutlier = R_GRM_R_nonOutlier,
              TwoSubj_list = TwoSubj_list, ThreeSubj_list = ThreeSubj_list, MAF_interval = MAF_interval)

@@ -14,8 +14,8 @@ RPGWASClass::RPGWASClass(arma::vec t_Tarvec,
                          double t_lambda,
                          arma::vec t_gammas,
                          double t_gamma_riskVec,
-                         arma::vec t_beta_null,
-                         arma::vec t_resid_risk,
+                         arma::mat t_inv_tX_X,
+                         arma::mat t_inv_tX_X_tX,
                          arma::vec t_t0,
                          arma::vec t_resid_unrelated_outliers,  
                          double t_sum_R_nonOutlier, 
@@ -37,8 +37,8 @@ RPGWASClass::RPGWASClass(arma::vec t_Tarvec,
   m_lambda = t_lambda;
   m_gammas = t_gammas;
   m_gamma_riskVec = t_gamma_riskVec;
-  m_beta_null = t_beta_null;  
-  m_resid_risk = t_resid_risk;
+  m_inv_tX_X = t_inv_tX_X;  
+  m_inv_tX_X_tX = t_inv_tX_X_tX;
   m_t0 = t_t0;
   m_resid_unrelated_outliers = t_resid_unrelated_outliers;
   m_sum_unrelated_outliers2 = sum(t_resid_unrelated_outliers % t_resid_unrelated_outliers);

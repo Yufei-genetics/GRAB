@@ -354,8 +354,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // setRPGWASobjInCPP
-void setRPGWASobjInCPP(arma::vec t_Tarvec, arma::vec t_Riskvec, arma::mat t_designMat, Rcpp::DataFrame t_GRM, arma::vec t_resid, double t_lambda, arma::vec t_gammas, double t_gamma_riskVec, arma::vec t_beta_null, arma::vec t_resid_risk, arma::vec t_t0, arma::vec t_resid_unrelated_outliers, double t_sum_R_nonOutlier, double t_R_GRM_R_nonOutlier, double t_R_GRM_R_TwoSubjOutlier, double t_R_GRM_R, arma::vec t_MAF_interval, Rcpp::List t_TwoSubj_list, Rcpp::List t_ThreeSubj_list, double t_SPA_Cutoff, double t_zeta, double t_tol);
-RcppExport SEXP _GRAB_setRPGWASobjInCPP(SEXP t_TarvecSEXP, SEXP t_RiskvecSEXP, SEXP t_designMatSEXP, SEXP t_GRMSEXP, SEXP t_residSEXP, SEXP t_lambdaSEXP, SEXP t_gammasSEXP, SEXP t_gamma_riskVecSEXP, SEXP t_beta_nullSEXP, SEXP t_resid_riskSEXP, SEXP t_t0SEXP, SEXP t_resid_unrelated_outliersSEXP, SEXP t_sum_R_nonOutlierSEXP, SEXP t_R_GRM_R_nonOutlierSEXP, SEXP t_R_GRM_R_TwoSubjOutlierSEXP, SEXP t_R_GRM_RSEXP, SEXP t_MAF_intervalSEXP, SEXP t_TwoSubj_listSEXP, SEXP t_ThreeSubj_listSEXP, SEXP t_SPA_CutoffSEXP, SEXP t_zetaSEXP, SEXP t_tolSEXP) {
+void setRPGWASobjInCPP(arma::vec t_Tarvec, arma::vec t_Riskvec, arma::mat t_designMat, Rcpp::DataFrame t_GRM, arma::vec t_resid, double t_lambda, arma::vec t_gammas, double t_gamma_riskVec, arma::vec t_inv_tX_X, arma::vec t_inv_tX_X_tX, arma::vec t_t0, arma::vec t_resid_unrelated_outliers, double t_sum_R_nonOutlier, double t_R_GRM_R_nonOutlier, double t_R_GRM_R_TwoSubjOutlier, double t_R_GRM_R, arma::vec t_MAF_interval, Rcpp::List t_TwoSubj_list, Rcpp::List t_ThreeSubj_list, double t_SPA_Cutoff, double t_zeta, double t_tol);
+RcppExport SEXP _GRAB_setRPGWASobjInCPP(SEXP t_TarvecSEXP, SEXP t_RiskvecSEXP, SEXP t_designMatSEXP, SEXP t_GRMSEXP, SEXP t_residSEXP, SEXP t_lambdaSEXP, SEXP t_gammasSEXP, SEXP t_gamma_riskVecSEXP, SEXP t_inv_tX_XSEXP, SEXP t_inv_tX_X_tXSEXP, SEXP t_t0SEXP, SEXP t_resid_unrelated_outliersSEXP, SEXP t_sum_R_nonOutlierSEXP, SEXP t_R_GRM_R_nonOutlierSEXP, SEXP t_R_GRM_R_TwoSubjOutlierSEXP, SEXP t_R_GRM_RSEXP, SEXP t_MAF_intervalSEXP, SEXP t_TwoSubj_listSEXP, SEXP t_ThreeSubj_listSEXP, SEXP t_SPA_CutoffSEXP, SEXP t_zetaSEXP, SEXP t_tolSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type t_Tarvec(t_TarvecSEXP);
@@ -366,8 +366,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type t_lambda(t_lambdaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_gammas(t_gammasSEXP);
     Rcpp::traits::input_parameter< double >::type t_gamma_riskVec(t_gamma_riskVecSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type t_beta_null(t_beta_nullSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type t_resid_risk(t_resid_riskSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_inv_tX_X(t_inv_tX_XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type t_inv_tX_X_tX(t_inv_tX_X_tXSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_t0(t_t0SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_resid_unrelated_outliers(t_resid_unrelated_outliersSEXP);
     Rcpp::traits::input_parameter< double >::type t_sum_R_nonOutlier(t_sum_R_nonOutlierSEXP);
@@ -380,7 +380,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type t_SPA_Cutoff(t_SPA_CutoffSEXP);
     Rcpp::traits::input_parameter< double >::type t_zeta(t_zetaSEXP);
     Rcpp::traits::input_parameter< double >::type t_tol(t_tolSEXP);
-    setRPGWASobjInCPP(t_Tarvec, t_Riskvec, t_designMat, t_GRM, t_resid, t_lambda, t_gammas, t_gamma_riskVec, t_beta_null, t_resid_risk, t_t0, t_resid_unrelated_outliers, t_sum_R_nonOutlier, t_R_GRM_R_nonOutlier, t_R_GRM_R_TwoSubjOutlier, t_R_GRM_R, t_MAF_interval, t_TwoSubj_list, t_ThreeSubj_list, t_SPA_Cutoff, t_zeta, t_tol);
+    setRPGWASobjInCPP(t_Tarvec, t_Riskvec, t_designMat, t_GRM, t_resid, t_lambda, t_gammas, t_gamma_riskVec, t_inv_tX_X, t_inv_tX_X_tX, t_t0, t_resid_unrelated_outliers, t_sum_R_nonOutlier, t_R_GRM_R_nonOutlier, t_R_GRM_R_TwoSubjOutlier, t_R_GRM_R, t_MAF_interval, t_TwoSubj_list, t_ThreeSubj_list, t_SPA_Cutoff, t_zeta, t_tol);
     return R_NilValue;
 END_RCPP
 }
