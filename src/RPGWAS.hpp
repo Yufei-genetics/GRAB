@@ -85,7 +85,7 @@ public:
     double sq1 = std::accumulate(v1.begin(), v1.end(), 0.0) / (n - 2);
     
     double var1 = sq1 * inv_tG_G(1, 1);
-    double pval1 = R::pchisq(f1[1] * f1[1] / var1, 1, 0, 0);
+    double pval1 = R::pchisq(coef1[1] * coef1[1] / var1, 1, 0, 0);
     
     arma::vec coef2 = inv_tG_G_tG * v1;
     arma::vec f2 = G * coef2;
@@ -94,7 +94,7 @@ public:
     double sq2 = std::accumulate(v2.begin(), v2.end(), 0.0) / (n - 2);
     
     double var2 = sq2 * inv_tG_G(1, 1);
-    double pval2 = R::pchisq(f2[1] * f2[1] / var2, 1, 0, 0);
+    double pval2 = R::pchisq(coef2[1] * coef2[1] / var2, 1, 0, 0);
     
     arma::vec new_Riskvec = f1 + sqrt(sq1) * r1 / sqrt(f2);
     
