@@ -113,9 +113,11 @@ public:
     arma::mat X = join_horiz(arma::ones<arma::vec>(m_Riskvec.n_rows), m_designMat); 
     arma::mat B = trans(X) * t_Gvec;
     double D = as_scalar(trans(t_Gvec) * t_Gvec);
-    
+
     arma::mat inv_A_B = m_inv_tX_X_tX * t_Gvec;
+    
     double M22_value = 1.0 / (D - as_scalar(trans(B) * inv_A_B));
+    
     arma::mat M22 = arma::mat(1, 1, arma::fill::zeros);
     M22(0, 0) = M22_value;
     
@@ -147,7 +149,7 @@ public:
   {
     Rcpp::List fit_results = fit_full(t_Gvec);
     
-    new_Riskvec = new_Riskvec - Rcpp::as<arma::vec>(fit_results["beta.geno"]) * t_Gvec; // wait for checking
+    new_Riskvec = new_Riskvec - Rcpp::as<double>(fit_results["beta.geno"]) * t_Gvec; // wait for checking
     
     arma::uvec obs_Y = arma::find_finite(m_Tarvec);
     arma::uvec miss_Y = arma::find_nonfinite(m_Tarvec);
@@ -166,7 +168,7 @@ public:
     double ia2b2 = - m_gamma_riskVec * arma::sum(arma::pow(f, 2) % arma::pow(t_Gvec.elem(obs_Y), 2) / deno);
     double ib2b2 = arma::as_scalar(arma::sum(arma::pow(t_Gvec, 2)) / Rcpp::as<double>(fit_results["sigma2_sq"])) - (m_gamma_riskVec * ia2b2);
     double lambda = ia2b2 / ib2b2;
-
+    
     arma::vec R_alpha2 = f % (m_Tarvec.elem(obs_Y) - F) / deno;
     arma::vec R1_beta2 = (1 / Rcpp::as<double>(fit_results["sigma2_sq"])) * Rcpp::as<arma::vec>(fit_results["Resid_Risk"]);
     arma::vec R2_beta2 = - m_gamma_riskVec * R_alpha2;
@@ -408,26 +410,27 @@ public:
       Score_var = G_var * m_R_GRM_R;
       t_zScore = Score/sqrt(Score_var);
       
-    } else{
-      arma::vec new_resid = calculate_new_Residuals(t_Gvec, 
-                                                    Rcpp::as<arma::vec>(check_result['new_Riskvec']));
+    } 
+    else{
+      arma::vec new_resid = calculate_new_Residuals(t_Gvec,
+                                                    Rcpp::as<arma::vec>(check_result["new_Riskvec"]));
       Score = sum(t_Gvec % new_resid) - mean(t_Gvec) * sum(new_resid);
-      
+
       Rcpp::IntegerVector indice1 = m_GRM["indice1"];
       Rcpp::IntegerVector indice2 = m_GRM["indice2"];
       arma::uvec indices1 = Rcpp::as<arma::uvec>(indice1) - 1;  // R to C++ index (0-based)
       arma::uvec indices2 = Rcpp::as<arma::uvec>(indice2) - 1;  // R to C++ index (0-based)
-      
+
       arma::vec pos1 = new_resid.elem(indices1);
       arma::vec pos2 = new_resid.elem(indices2);
       arma::vec Values = Rcpp::as<arma::vec>(m_GRM["Value"]);
       arma::vec Cov = arma::abs(Values) % pos1 % pos2;
-      
+
       double R_GRM_R = sum(Cov);
       Score_var = G_var * R_GRM_R;
       t_zScore = Score/sqrt(Score_var);
     }
-    
+
     if (std::abs(t_zScore) <= m_SPA_Cutoff)
     {
       // std::cout << "t_zScore:" << t_zScore << std::endl;

@@ -354,7 +354,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // setRPGWASobjInCPP
-void setRPGWASobjInCPP(arma::vec t_Tarvec, arma::vec t_Riskvec, arma::mat t_designMat, Rcpp::DataFrame t_GRM, arma::vec t_resid, double t_lambda, arma::vec t_gammas, double t_gamma_riskVec, arma::vec t_inv_tX_X, arma::vec t_inv_tX_X_tX, arma::vec t_t0, arma::vec t_resid_unrelated_outliers, double t_sum_R_nonOutlier, double t_R_GRM_R_nonOutlier, double t_R_GRM_R_TwoSubjOutlier, double t_R_GRM_R, arma::vec t_MAF_interval, Rcpp::List t_TwoSubj_list, Rcpp::List t_ThreeSubj_list, double t_SPA_Cutoff, double t_zeta, double t_tol);
+void setRPGWASobjInCPP(arma::vec t_Tarvec, arma::vec t_Riskvec, arma::mat t_designMat, Rcpp::DataFrame t_GRM, arma::vec t_resid, double t_lambda, arma::vec t_gammas, double t_gamma_riskVec, arma::mat t_inv_tX_X, arma::mat t_inv_tX_X_tX, arma::vec t_t0, arma::vec t_resid_unrelated_outliers, double t_sum_R_nonOutlier, double t_R_GRM_R_nonOutlier, double t_R_GRM_R_TwoSubjOutlier, double t_R_GRM_R, arma::vec t_MAF_interval, Rcpp::List t_TwoSubj_list, Rcpp::List t_ThreeSubj_list, double t_SPA_Cutoff, double t_zeta, double t_tol);
 RcppExport SEXP _GRAB_setRPGWASobjInCPP(SEXP t_TarvecSEXP, SEXP t_RiskvecSEXP, SEXP t_designMatSEXP, SEXP t_GRMSEXP, SEXP t_residSEXP, SEXP t_lambdaSEXP, SEXP t_gammasSEXP, SEXP t_gamma_riskVecSEXP, SEXP t_inv_tX_XSEXP, SEXP t_inv_tX_X_tXSEXP, SEXP t_t0SEXP, SEXP t_resid_unrelated_outliersSEXP, SEXP t_sum_R_nonOutlierSEXP, SEXP t_R_GRM_R_nonOutlierSEXP, SEXP t_R_GRM_R_TwoSubjOutlierSEXP, SEXP t_R_GRM_RSEXP, SEXP t_MAF_intervalSEXP, SEXP t_TwoSubj_listSEXP, SEXP t_ThreeSubj_listSEXP, SEXP t_SPA_CutoffSEXP, SEXP t_zetaSEXP, SEXP t_tolSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -366,8 +366,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type t_lambda(t_lambdaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_gammas(t_gammasSEXP);
     Rcpp::traits::input_parameter< double >::type t_gamma_riskVec(t_gamma_riskVecSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type t_inv_tX_X(t_inv_tX_XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type t_inv_tX_X_tX(t_inv_tX_X_tXSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type t_inv_tX_X(t_inv_tX_XSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type t_inv_tX_X_tX(t_inv_tX_X_tXSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_t0(t_t0SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type t_resid_unrelated_outliers(t_resid_unrelated_outliersSEXP);
     Rcpp::traits::input_parameter< double >::type t_sum_R_nonOutlier(t_sum_R_nonOutlierSEXP);
