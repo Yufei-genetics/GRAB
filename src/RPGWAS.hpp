@@ -66,46 +66,6 @@ public:
               double t_zeta,
               double t_tol);
   
-  // function to fit the full linear regression (Riskvec ~ Gvec) and check heteroscedasticity
-  Rcpp::List check_geno(arma::vec t_Gvec) 
-  {
-    
-    int n = t_Gvec.n_rows;
-    arma::mat G = join_horiz(arma::ones<arma::vec>(n), t_Gvec); 
-    arma::mat inv_tG_G = arma::inv(trans(G) * G);
-    arma::mat inv_tG_G_tG = inv_tG_G * trans(G);
-    // std::cout << "Shape of inv_tG_G_tG: " << inv_tG_G_tG.n_rows << " x " << inv_tG_G_tG.n_cols << std::endl;
-
-    arma::vec coef1 = inv_tG_G_tG * m_Riskvec;
-    // std::cout << "coef_geno: " << coef_geno << std::endl;
-    
-    arma::vec f1 = G * coef1;
-    arma::vec r1 = m_Riskvec - f1;
-    arma::vec v1 = arma::square(r1); 
-    double sq1 = std::accumulate(v1.begin(), v1.end(), 0.0) / (n - 2);
-    
-    double var1 = sq1 * inv_tG_G(1, 1);
-    double pval1 = R::pchisq(coef1[1] * coef1[1] / var1, 1, 0, 0);
-    
-    arma::vec coef2 = inv_tG_G_tG * v1;
-    arma::vec f2 = G * coef2;
-    arma::vec r2 = v1 - f1;
-    arma::vec v2 = arma::square(r2); 
-    double sq2 = std::accumulate(v2.begin(), v2.end(), 0.0) / (n - 2);
-    
-    double var2 = sq2 * inv_tG_G(1, 1);
-    double pval2 = R::pchisq(coef2[1] * coef2[1] / var2, 1, 0, 0);
-    
-    arma::vec new_Riskvec = f1 + sqrt(sq1) * r1 / sqrt(f2);
-    
-    // Return linear pval1, Heteroscedasticity test pval2, and new risk
-    return Rcpp::List::create(
-      Rcpp::Named("pval1") = pval1,
-      Rcpp::Named("pval2") = pval2, 
-      Rcpp::Named("new_Riskvec") = new_Riskvec
-    );
-  }
-  
   // function to fit the full linear regression (Riskvec ~ designMat + Gvec)
   Rcpp::List fit_full(arma::vec t_Gvec) 
   {
@@ -113,11 +73,9 @@ public:
     arma::mat X = join_horiz(arma::ones<arma::vec>(m_Riskvec.n_rows), m_designMat); 
     arma::mat B = trans(X) * t_Gvec;
     double D = as_scalar(trans(t_Gvec) * t_Gvec);
-
+    
     arma::mat inv_A_B = m_inv_tX_X_tX * t_Gvec;
-    
     double M22_value = 1.0 / (D - as_scalar(trans(B) * inv_A_B));
-    
     arma::mat M22 = arma::mat(1, 1, arma::fill::zeros);
     M22(0, 0) = M22_value;
     
@@ -130,26 +88,29 @@ public:
     );
     
     arma::mat Z = join_horiz(X, t_Gvec);
-    arma::vec Est = M * trans(Z) * m_Riskvec;
+    arma::vec est = M * trans(Z) * m_Riskvec;
     
-    arma::vec Resid_Risk = m_Riskvec - Z * Est;
-    double sigma2_sq = as_scalar(trans(Resid_Risk) * (Resid_Risk)) / (m_Riskvec.n_rows - Z.n_cols);
+    double sigma2_sq = as_scalar(trans(m_Riskvec - Z * est) * (m_Riskvec - Z * est)) / (m_Riskvec.n_rows - Z.n_cols);
+    double var_geno = sigma2_sq * M(M.n_rows - 1, M.n_cols - 1);
+    
+    double score = est(est.n_elem - 1) * est(est.n_elem - 1) / var_geno;
+    double pval = R::pchisq(score, 1, 0, 0);
     
     return Rcpp::List::create(
-      Rcpp::Named("betas") = Est.subvec(0, Est.n_elem - 2),
-      Rcpp::Named("beta.geno") = Est(Est.n_elem - 1), 
+      Rcpp::Named("betas") = est.subvec(0, est.n_elem - 2),
+      Rcpp::Named("beta.geno") = est(est.n_elem - 1), 
       Rcpp::Named("sigma2_sq") = sigma2_sq,
-      Rcpp::Named("Resid_Risk") = Resid_Risk
+      Rcpp::Named("pval") = pval
     );
   }
   
   // function to generate new residuals using updated Y_hat
-  arma::vec calculate_new_Residuals(arma::vec t_Gvec,
-                                    arma::vec new_Riskvec) 
+  arma::vec calculate_new_Residuals(arma::vec t_Gvec) 
   {
+    arma::mat X = arma::join_horiz(arma::ones(m_Riskvec.n_rows), m_designMat);
     Rcpp::List fit_results = fit_full(t_Gvec);
     
-    new_Riskvec = new_Riskvec - Rcpp::as<double>(fit_results["beta.geno"]) * t_Gvec; // wait for checking
+    arma::vec new_Riskvec = m_Riskvec - Rcpp::as<double>(fit_results["beta.geno"]) * t_Gvec; // wait for checking
     
     arma::uvec obs_Y = arma::find_finite(m_Tarvec);
     arma::uvec miss_Y = arma::find_nonfinite(m_Tarvec);
@@ -165,12 +126,15 @@ public:
     arma::uvec indices2 = arma::find(F == 0);
     deno.elem(indices2) = deno.elem(indices2) + 1e-200;
     
+    double sigma2_sq = Rcpp::as<double>(fit_results["sigma2_sq"]);
+    arma::vec betas = arma::join_vert(Rcpp::as<arma::vec>(fit_results["betas"]), Rcpp::as<arma::vec>(fit_results["beta.geno"]));
+    
     double ia2b2 = - m_gamma_riskVec * arma::sum(arma::pow(f, 2) % arma::pow(t_Gvec.elem(obs_Y), 2) / deno);
     double ib2b2 = arma::as_scalar(arma::sum(arma::pow(t_Gvec, 2)) / Rcpp::as<double>(fit_results["sigma2_sq"])) - (m_gamma_riskVec * ia2b2);
     double lambda = ia2b2 / ib2b2;
     
     arma::vec R_alpha2 = f % (m_Tarvec.elem(obs_Y) - F) / deno;
-    arma::vec R1_beta2 = (1 / Rcpp::as<double>(fit_results["sigma2_sq"])) * Rcpp::as<arma::vec>(fit_results["Resid_Risk"]);
+    arma::vec R1_beta2 = (1 / sigma2_sq) * (m_Riskvec - arma::join_horiz(X, t_Gvec) * betas);
     arma::vec R2_beta2 = - m_gamma_riskVec * R_alpha2;
     
     arma::vec resid_obs = R_alpha2 - lambda * (R1_beta2.elem(obs_Y) + R2_beta2);
@@ -402,9 +366,9 @@ public:
     double G_var = 2 * MAF * (1 - MAF);
     double Score, Score_var;
     
-    Rcpp::List check_result = check_geno(t_Gvec);
+    Rcpp::List fit_results = fit_full(t_Gvec);
     
-    if (Rcpp::as<double>(check_result["pval1"]) > 1e-3 && Rcpp::as<double>(check_result["pval2"]) > 0.5)
+    if (Rcpp::as<double>(fit_results["pval"]) > 1e-3)
     {
       Score = sum(t_Gvec % m_resid) - mean(t_Gvec) * sum(m_resid);
       Score_var = G_var * m_R_GRM_R;
@@ -412,8 +376,7 @@ public:
       
     } 
     else{
-      arma::vec new_resid = calculate_new_Residuals(t_Gvec,
-                                                    Rcpp::as<arma::vec>(check_result["new_Riskvec"]));
+      arma::vec new_resid = calculate_new_Residuals(t_Gvec);
       Score = sum(t_Gvec % new_resid) - mean(t_Gvec) * sum(new_resid);
 
       Rcpp::IntegerVector indice1 = m_GRM["indice1"];
