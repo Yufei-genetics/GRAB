@@ -24,6 +24,8 @@
   SparseGRMFile = system.file("SparseGRM", "SparseGRM.txt", package = "GRAB")
   PairwiseIBDFile = system.file("PairwiseIBD", "PairwiseIBD.txt", package = "GRAB")
   obj.RPGWAS = RPGWAS.NullModel(PhenoFile,
+                                TarColname = 'Tar',
+                                RiskColname = 'Risk',
                                 CovaColname = c('AGE', 'GENDER'),
                                 PlinkFile = PlinkFile,
                                 SparseGRMFile = SparseGRMFile,

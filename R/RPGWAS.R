@@ -11,9 +11,13 @@
 #' # Step 1: fit a null model
 #' PhenoFile = system.file("extdata", "simuPHENO.txt", package = "GRAB")
 #' PhenoData = data.table::fread(PhenoFile, header = T)
-#' obj.RPGWAS = RPGWAS.NullModel(SparseGRMFile = SparseGRMFile,
+#' obj.RPGWAS = RPGWAS.NullModel(PhenoFile = PhenoFile,
+#'                               TarColname = 'Tar',
+#'                               RiskColname = 'Risk',
+#'                               CovarColname = c('AGE', 'GENDER'),
+#'                               PlinkFile = PlinkFile,
+#'                               SparseGRMFile = SparseGRMFile,
 #'                               PairwiseIBDFile = PairwiseIBDFile,
-#'                               LambdaGenoFile = LambdaGenoFile,
 #'                               control = list(ControlOutlier = FALSE))
 #'
 #' # Step 2: perform score tesinstall.packages("cli")
@@ -154,6 +158,8 @@ mainMarker.RPGWAS = function(genoType, genoIndex, outputColumns)
 
 
 RPGWAS.NullModel = function(PhenoFile,          # at least four columns: column 1 is subjID, column 2 is Target phenotype, column 3 is Risk prediction, column 4 covariates
+                            TarColname,
+                            RiskColname,
                             CovaColname,
                             PlinkFile,
                             SparseGRMFile,
@@ -199,8 +205,8 @@ RPGWAS.NullModel = function(PhenoFile,          # at least four columns: column 
     designMat = as.matrix(designMat)
   }
   
-  TarVec = Pheno$Tar
-  RiskVec = Pheno$Risk
+  TarVec = Pheno %>% pull(TarColname)
+  RiskVec = Pheno %>% pull(RiskColname)
   
   null.fitter = calculate_nullR(tarVec = TarVec,
                                 riskVec = RiskVec,
